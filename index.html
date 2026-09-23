@@ -204,14 +204,30 @@ table.dates tr.hard td:nth-child(2){font-weight:600}
 .choose h1{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.01em;margin:0;text-align:center}
 .choose p{margin:0;color:var(--ink-3);font-size:14px;text-align:center;max-width:36ch}
 .choose .opts{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
-.choose button{appearance:none;cursor:pointer;background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:26px 34px;min-width:200px;text-align:left;color:inherit;font-family:inherit;box-shadow:var(--shadow);transition:border-color .15s,transform .1s}
+.choose button{appearance:none;cursor:pointer;background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:26px 34px;min-width:180px;text-align:center;color:inherit;font-family:inherit;box-shadow:var(--shadow);transition:border-color .15s,transform .1s}
 .choose button:hover{border-color:var(--accent)}
 .choose button:active{transform:translateY(1px)}
 .choose button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.choose button b{display:block;font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:4px}
+.choose button b{display:block;font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;text-align:center}
 .choose button span{display:block;font-size:12.5px;color:var(--ink-3)}
 .choose .foot{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:8px}
 .notme{appearance:none;background:none;border:0;font:400 11px var(--sans);color:var(--ink-3);cursor:pointer;text-decoration:underline;padding:0 0 0 8px}
+.theme{appearance:none;background:transparent;border:1px solid var(--rule);color:var(--ink-2);border-radius:999px;width:28px;height:28px;cursor:pointer;font-size:14px;line-height:1;margin-right:8px;display:grid;place-items:center}
+.theme:hover{border-color:var(--accent);color:var(--accent)}
+.tcount{display:inline-block;font:500 10px/1 var(--mono);background:var(--blank);color:#fff;border-radius:999px;padding:3px 6px;margin-left:4px;vertical-align:middle}
+.tf{appearance:none;background:transparent;border:1px solid var(--rule);color:var(--ink-3);border-radius:5px;font:500 10px/1 var(--sans);padding:4px 7px;cursor:pointer;flex:none;text-transform:uppercase;letter-spacing:.06em}
+.tf:hover{border-color:var(--blank);color:var(--blank)}
+.tf[aria-pressed="true"]{background:var(--blank-bg);border-color:var(--blank);color:var(--blank)}
+.tgrp{margin-top:18px}
+.tgrp h3{margin:0 0 6px}
+ul.tlist{list-style:none;padding:0;margin:0}
+ul.tlist li{display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--rule-soft)}
+ul.tlist .tt{flex:1;min-width:0}
+ul.tlist .tt > a{font-size:13.5px;color:var(--ink);text-decoration:none;font-weight:500}
+ul.tlist .tt small a{color:var(--accent);text-decoration:none;font-weight:400}
+ul.tlist .tt a:hover{text-decoration:underline}
+ul.tlist .tt small{display:block;color:var(--ink-3);font-size:11.5px}
+ul.tlist .when{font-family:var(--mono);font-size:11px;color:var(--ink-3);flex:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -219,18 +235,16 @@ table.dates tr.hard td:nth-child(2){font-weight:600}
 
 <div class="choose" id="choose" hidden>
   <h1>Who's this?</h1>
-  <p>Pick once on each device. Your work saves to you, wherever you open it.</p>
   <div class="opts">
-    <button data-me="a"><b>Saad</b><span>Learning it. AS by Christmas.</span></button>
-    <button data-me="b"><b>Hammad</b><span>Getting it back. Start with Chapter 1.</span></button>
+    <button data-me="a"><b>Saad</b></button>
+    <button data-me="b"><b>Hammad</b></button>
   </div>
-  <div class="foot">9MA0 &middot; Paper 1 on 26 May 2027</div>
 </div>
 <div class="wrap">
 <header class="top">
   <div class="brandrow">
     <div class="brand">9MA0 <span>&middot; Edexcel Maths</span></div>
-    <div class="whorow"><span id="sync" class="sync" title="Sync status"></span><div id="whorow" style="display:flex;gap:6px">
+    <div class="whorow"><button class="theme" id="theme" aria-label="Toggle light or dark" title="Light / dark">&#9681;</button><span id="sync" class="sync" title="Sync status"></span><div id="whorow" style="display:flex;gap:6px">
       <button class="who" data-p="a" aria-pressed="true">Saad</button>
       <button class="who" data-p="b" aria-pressed="false">Hammad</button>
     </div><button class="notme" id="notme" title="Choose again">not you?</button></div>
@@ -239,6 +253,7 @@ table.dates tr.hard td:nth-child(2){font-weight:600}
     <button role="tab" data-v="now" aria-selected="true">Now</button>
     <button role="tab" data-v="course" aria-selected="false">Course</button>
     <button role="tab" data-v="papers" aria-selected="false">Papers</button>
+    <button role="tab" data-v="tutor" aria-selected="false">Tutor <span id="tcount" class="tcount" hidden>0</span></button>
     <button role="tab" data-v="method" aria-selected="false">Method</button>
   </nav>
 </header>
@@ -329,6 +344,13 @@ table.dates tr.hard td:nth-child(2){font-weight:600}
   <p class="note">Nine full sets exist: June 2018, 2019, 2022, 2023, 2024, 2025, 2026 and the pandemic-only November 2020 and 2021 series. Recent A* boundaries have sat around 75&ndash;80%, A around 65&ndash;70%. Direction of travel, not a ceiling.</p>
 </section>
 
+<!-- ============ TUTOR ============ -->
+<section id="v-tutor" hidden>
+  <h2>For the tutor</h2>
+  <p class="sub">Everything flagged with the tutor button, both of you, newest first. Clear it once it's been covered.</p>
+  <div id="tutorlist"></div>
+</section>
+
 <!-- ============ METHOD ============ -->
 <section id="v-method" hidden>
   <h2>The session loop</h2>
@@ -397,7 +419,7 @@ var PRIORSUB={
 var STATUS=["Not started","Open","Landed","Parked","Budget spent"];
 
 var store={a:blank("Saad",13),b:blank("Hammad",15)}, who="a";
-function blank(n,t){return{name:n,target:t,prior:{},bursts:{},ticks:{},done:{},budget:{},week:{},papers:[]};}
+function blank(n,t){return{name:n,target:t,prior:{},bursts:{},ticks:{},done:{},budget:{},week:{},papers:[],tutor:{}};}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.a&&o.b)store=o;}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}
   if(SYNC.ready&&who===SYNC.id){clearTimeout(SYNC.timer);setSync("busy");SYNC.timer=setTimeout(push,600);}}
@@ -464,7 +486,8 @@ function cardHTML(c,full){
    +'</div><div class="subs">';
   var t=s.ticks[id]||{};
   for(j=0;j<c[8].length;j++){
-    h+='<label class="srow"><input type="checkbox" data-c="'+id+'" data-s="'+j+'"'+(t[j]?' checked':'')+'><a href="'+esc(c[8][j][1])+'" target="_blank" rel="noopener">'+esc(c[8][j][0])+'</a><span class="yt">video</span></label>';
+    var tf=(s.tutor&&s.tutor[id+"."+j]);
+    h+='<div class="srow"><input type="checkbox" id="ck'+id+'_'+j+'" data-c="'+id+'" data-s="'+j+'"'+(t[j]?' checked':'')+'><a href="'+esc(c[8][j][1])+'" target="_blank" rel="noopener">'+esc(c[8][j][0])+'</a><button class="tf" data-tf="'+id+'.'+j+'" aria-pressed="'+(tf?'true':'false')+'" title="Flag for the tutor">'+(tf?'Tutor &check;':'Tutor')+'</button></div>';
   }
   h+='</div><div class="acts">'
    +'<button class="btn small" data-act="burst" data-c="'+id+'">+ Log burst</button>'
@@ -577,7 +600,26 @@ function renderPapers(){
   document.getElementById("s-recent").textContent=r.length?Math.round(rs/r.length):"—";
 }
 
-function renderAll(){renderNow();renderCourse();renderPapers();}
+function renderTutor(){
+  var ids=SYNC.ready?[SYNC.id,SYNC.id==="a"?"b":"a"]:[who];
+  var total=0,h="";
+  for(var q=0;q<ids.length;q++){
+    var st=store[ids[q]];if(!st)continue;var tt=st.tutor||{};
+    var items=[];for(var k in tt)if(tt[k]){var pr=k.split(".");var c=CH[+pr[0]],si=+pr[1];if(c&&c[8][si])items.push({k:k,c:c,s:c[8][si],ts:tt[k]});}
+    items.sort(function(x,y){return y.ts-x.ts;});total+=items.length;
+    h+='<div class="tgrp"><h3>'+esc(st.name)+' &middot; '+items.length+'</h3>';
+    if(!items.length){h+='<div class="empty">Nothing flagged.</div></div>';continue;}
+    h+='<ul class="tlist">';
+    for(var r=0;r<items.length;r++){var it=items[r],d=new Date(it.ts);
+      h+='<li><span class="tt"><a href="'+esc(it.s[1])+'" target="_blank" rel="noopener">'+esc(it.s[0])+'</a><small>'+esc(it.c[1])+' &middot; Year '+it.c[3]+' '+STRAND[it.c[2]]+' &middot; <a href="'+esc(it.c[9])+'" target="_blank" rel="noopener">Dr Frost</a> &middot; <a href="'+esc(it.c[5])+'" target="_blank" rel="noopener">Question Set</a></small></span>'
+        +'<span class="when">'+d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+'</span>'
+        +(ids[q]===who?'<button class="btn small ghost" data-tf="'+it.k+'">Clear</button>':'')+'</li>';}
+    h+='</ul></div>';
+  }
+  document.getElementById("tutorlist").innerHTML=h;
+  var tc=document.getElementById("tcount");tc.textContent=total;tc.hidden=!total;
+}
+function renderAll(){renderNow();renderCourse();renderPapers();renderTutor();}
 
 /* ---------- actions (delegated) ---------- */
 function act(e){
@@ -593,6 +635,8 @@ function act(e){
     else if(a==="reopen")delete s.done[id];
     save();renderAll();return;
   }
+  var f=t.closest("[data-tf]");
+  if(f){var k=f.getAttribute("data-tf");s.tutor=s.tutor||{};if(s.tutor[k])delete s.tutor[k];else s.tutor[k]=Date.now();save();renderAll();return;}
   var p=t.closest(".pr");
   if(p){var pid=+p.getAttribute("data-c"),pv=+p.getAttribute("data-p");
     if(s.prior[pid]===pv)delete s.prior[pid];else s.prior[pid]=pv;save();renderAll();return;}
@@ -612,6 +656,7 @@ function chg(e){
 }
 document.getElementById("v-now").addEventListener("click",act);
 document.getElementById("v-course").addEventListener("click",act);
+document.getElementById("v-tutor").addEventListener("click",act);
 document.getElementById("v-now").addEventListener("change",chg);
 document.getElementById("v-course").addEventListener("change",chg);
 
@@ -648,6 +693,16 @@ document.getElementById("notme").addEventListener("click",function(){
   try{localStorage.removeItem(KEY+"_me");}catch(e){}
   SYNC.ready=false;SYNC.id=null;SYNC.secret=null;setSync("off");showChooser(true);
 });
+(function(){var t=null;try{t=localStorage.getItem(KEY+"_theme");}catch(e){}
+  if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);
+  document.getElementById("theme").addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme");
+    var sysDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var isDark=cur?cur==="dark":sysDark;
+    var next=isDark?"light":"dark";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem(KEY+"_theme",next);}catch(e){}
+  });})();
 load();
 (function(){var m0=me();if(m0){who=m0;var bs=document.querySelectorAll("#whorow .who");for(i=0;i<bs.length;i++)bs[i].setAttribute("aria-pressed",bs[i].getAttribute("data-p")===m0?"true":"false");}})();
 if(me()){showChooser(false);initSync().then(function(){renderAll();});}
