@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>9MA0 Countdown</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+:root{
+  --paper:#fcfcfb;--card:#ffffff;--sunk:#f4f4f0;
+  --ink:#191a17;--ink-2:#4e5149;--ink-3:#7b7e75;
+  --rule:#dcdcd5;--rule-soft:#e9e9e3;
+  --accent:#15607f;--accent-soft:#e3eef3;
+  --solid:#18794e;--hazy:#b8842a;--blank:#a34a3f;
+  --solid-bg:#e4f0e9;--hazy-bg:#f6eddb;--blank-bg:#f5e5e2;
+  --park:#5b5e8a;--park-bg:#e9e9f4;
+  --shadow:0 1px 2px rgba(25,26,23,.05),0 6px 16px -10px rgba(25,26,23,.22);
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --paper:#16171a;--card:#1e1f23;--sunk:#25262b;--ink:#ecece7;--ink-2:#b0b2ac;--ink-3:#83857f;
+  --rule:#33343a;--rule-soft:#2a2b30;--accent:#3f96bd;--accent-soft:#1b2f3a;
+  --solid:#3aa06c;--hazy:#c99a24;--blank:#e0685a;--solid-bg:#172a22;--hazy-bg:#2b2517;--blank-bg:#2e1d1b;
+  --park:#9a9dd0;--park-bg:#24263a;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 16px -10px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{color-scheme:dark;
+  --paper:#16171a;--card:#1e1f23;--sunk:#25262b;--ink:#ecece7;--ink-2:#b0b2ac;--ink-3:#83857f;
+  --rule:#33343a;--rule-soft:#2a2b30;--accent:#3f96bd;--accent-soft:#1b2f3a;
+  --solid:#3aa06c;--hazy:#c99a24;--blank:#e0685a;--solid-bg:#172a22;--hazy-bg:#2b2517;--blank-bg:#2e1d1b;
+  --park:#9a9dd0;--park-bg:#24263a;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 16px -10px rgba(0,0,0,.7)}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding-inline:18px;padding-block:0 72px}
+a{color:var(--accent)}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule-soft);margin-inline:-18px;padding:10px 18px 0}
+.brandrow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.brand{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.brand span{color:var(--ink-3);font-weight:400}
+.whorow{display:flex;gap:6px;align-items:center}
+.who{font:500 12px/1 var(--sans);padding:6px 10px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink-2);cursor:pointer}
+.who[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+nav.seg{display:flex;gap:2px;margin-top:10px;overflow-x:auto;scrollbar-width:none}
+nav.seg::-webkit-scrollbar{display:none}
+nav.seg button{appearance:none;background:none;border:0;border-bottom:2px solid transparent;font:500 13.5px/1 var(--sans);color:var(--ink-3);padding:9px 12px 10px;cursor:pointer;white-space:nowrap}
+nav.seg button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:4px}
+
+.counts{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:18px 0 18px;border-bottom:1px solid var(--rule-soft)}
+.bigdays{display:flex;align-items:baseline;gap:8px}
+.bigdays b{font-family:var(--mono);font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:.9;font-variant-numeric:tabular-nums}
+.bigdays i{font-style:normal;font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.09em;max-width:80px;line-height:1.25}
+.papers3{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pchip{border:1px solid var(--rule);border-radius:7px;padding:6px 9px;background:var(--card);font:400 11.5px/1.35 var(--sans);color:var(--ink-2);min-width:96px}
+.pchip b{display:block;font:600 12px/1.3 var(--sans);color:var(--ink)}
+.pchip time{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:1px}
+
+section[hidden]{display:none!important}
+h2{font-family:var(--serif);font-size:17px;font-weight:600;margin:26px 0 2px;letter-spacing:-.005em}
+h3{font-family:var(--serif);font-size:15px;font-weight:600;margin:22px 0 6px;color:var(--ink-2)}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 14px;max-width:64ch}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px}
+.lab{font:500 10.5px/1 var(--sans);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.btn{appearance:none;font:500 13px/1 var(--sans);padding:9px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--rule)}
+.btn.small{padding:7px 10px;font-size:12px}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.45;cursor:default}
+
+/* milestones */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+@media (max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mrow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px}
+.mrow b{font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.mrow b small{font-size:12px;color:var(--ink-3);font-weight:400}
+.mrow span{font-size:12px;color:var(--ink-3);text-align:right}
+.meter{display:flex;gap:2px;height:9px;border-radius:999px;overflow:hidden;background:var(--sunk);margin-top:10px}
+.meter i{display:block;height:100%}
+.meter i:first-child{border-radius:999px 0 0 999px}
+.keys{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px}
+.key{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.key b{width:9px;height:9px;border-radius:2px;flex:none}
+.key em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+.rate{font-size:12px;color:var(--ink-3);margin-top:8px}
+.rate b{font-family:var(--mono);color:var(--ink);font-weight:500}
+.rate.warn b{color:var(--blank)}
+
+.burst{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:8px}
+.burstnum{font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.burstnum small{font-size:15px;color:var(--ink-3);font-weight:400}
+.inl{width:52px;font:500 12px var(--mono);padding:3px 5px;border:1px solid var(--rule);border-radius:5px;background:var(--card);color:var(--ink)}
+
+/* next-up chapter card */
+.next{margin-top:14px;border:1px solid var(--accent);border-radius:12px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+.nexthead{padding:14px 16px 10px;border-bottom:1px solid var(--rule-soft);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.nexthead .t{flex:1;min-width:200px}
+.nexthead .t b{display:block;font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:-.01em;line-width:1.2}
+.nexthead .t span{font-size:12px;color:var(--ink-3)}
+.budget{font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+.budget b{display:block;font-size:20px;color:var(--ink);font-weight:600;letter-spacing:-.02em}
+.budget.over b{color:var(--blank)}
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule-soft);border-bottom:1px solid var(--rule-soft)}
+@media (max-width:640px){.loop{grid-template-columns:repeat(2,1fr)}}
+.loop a{display:block;background:var(--card);padding:11px 12px;text-decoration:none;color:inherit}
+.loop a:hover{background:var(--accent-soft)}
+.loop a .n{font:500 10px/1 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);display:block;margin-bottom:5px}
+.loop a .v{font:500 13px/1.3 var(--sans);color:var(--accent)}
+.loop a .v small{display:block;font-weight:400;color:var(--ink-3);font-size:11px;margin-top:2px}
+.loop .step{background:var(--card);padding:11px 12px;color:var(--ink-3);font-size:12px}
+.subs{padding:6px 8px 8px}
+.srow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:7px}
+.srow:hover{background:var(--sunk)}
+.srow input{width:16px;height:16px;accent-color:var(--solid);flex:none;margin:0}
+.srow a{flex:1;min-width:0;font-size:13.5px;color:var(--ink);text-decoration:none;line-height:1.35}
+.srow a:hover{color:var(--accent);text-decoration:underline}
+.srow .yt{font:400 10.5px/1 var(--mono);color:var(--ink-3);flex:none}
+.acts{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px 14px;border-top:1px solid var(--rule-soft);align-items:center}
+.acts .sp{flex:1}
+.empty{color:var(--ink-3);font-size:13px;padding:14px 0 2px;font-style:italic}
+
+/* course list */
+.grp{margin-top:8px}
+.ch{border-bottom:1px solid var(--rule-soft)}
+.chh{width:100%;display:flex;align-items:center;gap:12px;padding:12px 2px;background:none;border:0;cursor:pointer;text-align:left;color:inherit;font-family:inherit}
+.chh:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+.chn{flex:1;min-width:0}
+.chn b{display:block;font:500 14.5px/1.3 var(--sans)}
+.chn span{font:400 11.5px/1.3 var(--sans);color:var(--ink-3)}
+.st{display:inline-block;font:500 10px/1 var(--sans);text-transform:uppercase;letter-spacing:.07em;padding:4px 7px;border-radius:4px;flex:none}
+.st.s0{background:var(--sunk);color:var(--ink-3)}
+.st.s1{background:var(--accent-soft);color:var(--accent)}
+.st.s2{background:var(--solid-bg);color:var(--solid)}
+.st.s3{background:var(--park-bg);color:var(--park)}
+.st.s4{background:var(--blank-bg);color:var(--blank)}
+.prior{display:flex;gap:3px;flex:none}
+.pr{appearance:none;border:1px solid var(--rule);background:transparent;cursor:pointer;font:500 10px/1 var(--sans);padding:5px 6px;border-radius:5px;color:var(--ink-3);white-space:nowrap}
+.pr[aria-pressed="true"][data-p="2"]{background:var(--solid-bg);border-color:var(--solid);color:var(--solid)}
+.pr[aria-pressed="true"][data-p="1"]{background:var(--hazy-bg);border-color:var(--hazy);color:var(--hazy)}
+.pr[aria-pressed="true"][data-p="0"]{background:var(--blank-bg);border-color:var(--blank);color:var(--blank)}
+.pr:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.chb{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);flex:none;font-variant-numeric:tabular-nums;width:44px;text-align:right}
+.chev{flex:none;color:var(--ink-3);transition:transform .16s ease;font-size:11px}
+.chh[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.chbody{padding:0 0 10px 6px;border-left:2px solid var(--rule-soft);margin-left:4px}
+.chbody .loop{border:1px solid var(--rule-soft);border-radius:8px;overflow:hidden;margin:4px 8px 6px}
+.chbody .acts{border-top:0;padding:6px 8px 4px}
+@media (max-width:560px){.prior{display:none}.chb{width:auto}}
+
+/* papers */
+.padd{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:14px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font:500 10.5px/1 var(--sans);text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3)}
+.fld select,.fld input{font:400 13px/1 var(--sans);padding:9px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--card);color:var(--ink)}
+.fld input[type="number"]{width:82px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.fld select{max-width:230px}
+.fld :focus-visible{outline:2px solid var(--accent);outline-offset:0}
+ul.plog{list-style:none;padding:0;margin:18px 0 0}
+ul.plog li{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--rule-soft)}
+.plname{flex:1;min-width:0;font-size:13.5px}
+.plname small{display:block;color:var(--ink-3);font-size:11.5px;font-family:var(--mono)}
+.bartrack{width:120px;height:6px;border-radius:999px;background:var(--sunk);flex:none;overflow:hidden}
+.bartrack i{display:block;height:100%;background:var(--accent);border-radius:999px}
+@media (max-width:520px){.bartrack{display:none}}
+.score{font-family:var(--mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;width:54px;text-align:right;flex:none}
+.score s{text-decoration:none;color:var(--ink-3);font-weight:400;font-size:11px}
+.del{appearance:none;background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:15px;padding:2px 4px;line-height:1;flex:none}
+.del:hover{color:var(--blank)}
+.avgrow{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.stat b{display:block;font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+
+/* method */
+.rules{counter-reset:r;list-style:none;padding:0;margin:14px 0 0}
+.rules li{counter-increment:r;display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.rules li::before{content:counter(r);font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid var(--rule);border-radius:999px;width:24px;height:24px;flex:none;display:grid;place-items:center;margin-top:1px}
+.rules b{display:block;font-weight:600;font-size:13.5px;margin-bottom:2px}
+.rules p{margin:0;font-size:13px;color:var(--ink-2);max-width:62ch}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.links a{font:500 12.5px/1 var(--sans);text-decoration:none;color:var(--accent);border:1px solid var(--rule);border-radius:7px;padding:8px 11px;background:var(--card)}
+.links a:hover{border-color:var(--accent);background:var(--accent-soft)}
+table.dates{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+table.dates td{padding:9px 0;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+table.dates td:first-child{font-family:var(--mono);font-size:12px;color:var(--ink-3);width:120px;white-space:nowrap;padding-right:14px}
+table.dates tr.hard td:nth-child(2){font-weight:600}
+.note{font-size:12.5px;color:var(--ink-3);margin-top:20px;border-top:1px solid var(--rule-soft);padding-top:14px;max-width:64ch}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.two .card b{display:block;font-family:var(--serif);font-size:15px;margin-bottom:6px}
+.two .card p{margin:0;font-size:13px;color:var(--ink-2)}
+.sync{width:8px;height:8px;border-radius:999px;background:var(--rule);display:inline-block;margin-right:6px;flex:none}
+.sync.ok{background:var(--solid)}.sync.busy{background:var(--hazy)}.sync.err{background:var(--blank)}.sync.off{background:var(--rule)}
+.other{margin-top:10px;font-size:12.5px;color:var(--ink-2);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.other b{font-family:var(--mono);font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.other .obar{display:inline-flex;gap:2px;width:90px;height:6px;border-radius:999px;overflow:hidden;background:var(--sunk);vertical-align:middle}
+.other .obar i{display:block;height:100%}
+.ro{margin-top:10px;font-size:12.5px;color:var(--park);background:var(--park-bg);border-radius:8px;padding:8px 12px}
+/* chooser */
+.choose{position:fixed;inset:0;z-index:50;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:18px}
+.choose[hidden]{display:none!important}
+.choose h1{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.01em;margin:0;text-align:center}
+.choose p{margin:0;color:var(--ink-3);font-size:14px;text-align:center;max-width:36ch}
+.choose .opts{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.choose button{appearance:none;cursor:pointer;background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:26px 34px;min-width:200px;text-align:left;color:inherit;font-family:inherit;box-shadow:var(--shadow);transition:border-color .15s,transform .1s}
+.choose button:hover{border-color:var(--accent)}
+.choose button:active{transform:translateY(1px)}
+.choose button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.choose button b{display:block;font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:4px}
+.choose button span{display:block;font-size:12.5px;color:var(--ink-3)}
+.choose .foot{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:8px}
+.notme{appearance:none;background:none;border:0;font:400 11px var(--sans);color:var(--ink-3);cursor:pointer;text-decoration:underline;padding:0 0 0 8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="choose" id="choose" hidden>
+  <h1>Who's this?</h1>
+  <p>Pick once on each device. Your work saves to you, wherever you open it.</p>
+  <div class="opts">
+    <button data-me="a"><b>Saad</b><span>Learning it. AS by Christmas.</span></button>
+    <button data-me="b"><b>Hammad</b><span>Getting it back. Start with Chapter 1.</span></button>
+  </div>
+  <div class="foot">9MA0 &middot; Paper 1 on 26 May 2027</div>
+</div>
+<div class="wrap">
+<header class="top">
+  <div class="brandrow">
+    <div class="brand">9MA0 <span>&middot; Edexcel Maths</span></div>
+    <div class="whorow"><span id="sync" class="sync" title="Sync status"></span><div id="whorow" style="display:flex;gap:6px">
+      <button class="who" data-p="a" aria-pressed="true">Saad</button>
+      <button class="who" data-p="b" aria-pressed="false">Hammad</button>
+    </div><button class="notme" id="notme" title="Choose again">not you?</button></div>
+  </div>
+  <nav class="seg" role="tablist">
+    <button role="tab" data-v="now" aria-selected="true">Now</button>
+    <button role="tab" data-v="course" aria-selected="false">Course</button>
+    <button role="tab" data-v="papers" aria-selected="false">Papers</button>
+    <button role="tab" data-v="method" aria-selected="false">Method</button>
+  </nav>
+</header>
+
+<div class="counts">
+  <div class="bigdays"><b id="days">&mdash;</b><i>days to Paper&nbsp;1</i></div>
+  <div class="papers3">
+    <div class="pchip"><b>Paper 1</b>Pure<time>26 May 2027</time></div>
+    <div class="pchip"><b>Paper 2</b>Pure<time>9 Jun 2027</time></div>
+    <div class="pchip"><b>Paper 3</b>Stats &amp; Mech<time>16 Jun 2027</time></div>
+  </div>
+</div>
+
+<!-- ============ NOW ============ -->
+<section id="v-now">
+  <div class="mgrid">
+    <div class="card">
+      <div class="lab">Pass one &middot; AS by 20 Dec</div>
+      <div class="mrow"><b><span id="as-done">0</span><small> / 24 chapters</small></b><span id="as-note"></span></div>
+      <div class="meter" id="as-meter"></div>
+      <div class="keys">
+        <span class="key"><b style="background:var(--solid)"></b>Landed <em id="as-k2">0</em></span>
+        <span class="key"><b style="background:var(--park)"></b>Parked <em id="as-k3">0</em></span>
+        <span class="key"><b style="background:var(--accent)"></b>Open <em id="as-k1">0</em></span>
+      </div>
+      <div class="rate" id="as-rate"></div>
+    </div>
+    <div class="card">
+      <div class="lab">Pass one &middot; Year 2 by 12 Mar</div>
+      <div class="mrow"><b><span id="y2-done">0</span><small> / 20 chapters</small></b><span id="y2-note"></span></div>
+      <div class="meter" id="y2-meter"></div>
+      <div class="keys">
+        <span class="key"><b style="background:var(--solid)"></b>Landed <em id="y2-k2">0</em></span>
+        <span class="key"><b style="background:var(--park)"></b>Parked <em id="y2-k3">0</em></span>
+        <span class="key"><b style="background:var(--accent)"></b>Open <em id="y2-k1">0</em></span>
+      </div>
+      <div class="rate" id="y2-rate"></div>
+    </div>
+  </div>
+
+  <div id="ro" class="ro" hidden></div>
+  <div id="other" class="other" hidden></div>
+  <div class="card" style="margin-top:12px">
+    <div class="lab">Bursts this week</div>
+    <div class="burst">
+      <div class="burstnum"><span id="bw">0</span><small> / <span id="bt">13</span></small></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span class="sub" style="margin:0;font-size:12px">Target <input id="tgt" class="inl" type="number" min="1" max="60"> /wk</span>
+      </div>
+    </div>
+    <p class="sub" style="margin:10px 0 0;font-size:12px">Logging a burst on the chapter below counts here too. 40 minutes, then stop.</p>
+  </div>
+
+  <h2>Next up</h2>
+  <p class="sub" id="next-sub">The next chapter in sequence. Questions first, video only for what doesn't land, move on when the budget's spent.</p>
+  <div id="next"></div>
+</section>
+
+<!-- ============ COURSE ============ -->
+<section id="v-course" hidden>
+  <h2>The course, in order</h2>
+  <p class="sub" id="prior-sub"></p>
+  <div id="course"></div>
+</section>
+
+<!-- ============ PAPERS ============ -->
+<section id="v-papers" hidden>
+  <h2>Past papers</h2>
+  <p class="sub">First full timed paper mid-January, at the AS boundary. Topic-sorted questions from PMT run from week one regardless. Mark strictly against the scheme.</p>
+  <div class="padd">
+    <div class="fld"><label for="psel">Paper</label><select id="psel"></select></div>
+    <div class="fld"><label for="pscore">Marks /100</label><input id="pscore" type="number" min="0" max="100" placeholder="0"></div>
+    <button class="btn" id="padd">Add</button>
+  </div>
+  <ul class="plog" id="plog"></ul>
+  <div class="avgrow">
+    <div class="stat"><div class="lab">Sat</div><b id="s-n">0</b></div>
+    <div class="stat"><div class="lab">Mean</div><b id="s-avg">&mdash;</b></div>
+    <div class="stat"><div class="lab">Best</div><b id="s-best">&mdash;</b></div>
+    <div class="stat"><div class="lab">Last five</div><b id="s-recent">&mdash;</b></div>
+  </div>
+  <div class="links">
+    <a href="https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/papers/" target="_blank" rel="noopener">PMT full papers</a>
+    <a href="https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/papers-as/" target="_blank" rel="noopener">PMT AS papers</a>
+    <a href="https://old.mathsgenie.co.uk/alevelpapers.php" target="_blank" rel="noopener">Maths Genie papers with model solutions</a>
+    <a href="https://www.examsolutions.net/a-level-maths/edexcel/edexcel-a-level-maths-past-papers/" target="_blank" rel="noopener">ExamSolutions worked papers</a>
+  </div>
+  <p class="note">Nine full sets exist: June 2018, 2019, 2022, 2023, 2024, 2025, 2026 and the pandemic-only November 2020 and 2021 series. Recent A* boundaries have sat around 75&ndash;80%, A around 65&ndash;70%. Direction of travel, not a ceiling.</p>
+</section>
+
+<!-- ============ METHOD ============ -->
+<section id="v-method" hidden>
+  <h2>The session loop</h2>
+  <p class="sub">Questions first. This is the whole method, and every chapter card runs it in this order.</p>
+  <ol class="rules">
+    <li><div><b>Dr Frost, cold</b><p>Open the chapter's practice and attempt questions before you've watched anything. Getting it wrong here is the point: it tells you which of the subtopics below actually need the video.</p></div></li>
+    <li><div><b>Stuck? That subtopic's Maths Genie video, only that one</b><p>Not the chapter. Not the playlist. The one five-minute lesson for the thing that just failed. Then back to Dr Frost until it regenerates one you can do.</p></div></li>
+    <li><div><b>Still stuck? ExamSolutions</b><p>Same content, different voice. Sometimes that's all it takes. If it isn't, that subtopic is going in the mistakes log and you're moving on.</p></div></li>
+    <li><div><b>Question Set, then PMT</b><p>Maths Genie's chapter Question Set with answers is the exit test. PMT's topic-sorted past paper questions are what real marks look like. Do both before you call a chapter landed.</p></div></li>
+    <li><div><b>Move on when the budget's spent, landed or not</b><p>Every chapter has a burst budget. When it's gone, mark it Landed if it landed and Parked if it didn't. Parked chapters come back in pass two, in March, with the textbook. That's not failure, it's the plan working: you'll know by February what you don't know, instead of finding out in May.</p></div></li>
+    <li><div><b>First sixty seconds of every paper: last page, count the questions</b><p>Every past paper, every time, until it's automatic.</p></div></li>
+  </ol>
+
+  <h2>Two triage scales</h2>
+  <div class="two">
+    <div class="card"><b>Saad</b><p>Rating against GCSE. <strong>Nothing</strong> means the topic doesn't exist for you. <strong>Some</strong> means GCSE covered a version of it. <strong>GCSE-solid</strong> means you could do the GCSE form today and it's the A-level extension that's new.</p></div>
+    <div class="card"><b>Hammad</b><p>Rating against what you had. <strong>Gone</strong> means nothing comes back on reading the title. <strong>Half there</strong> means you recognise it and could reconstruct it with a nudge. <strong>Still have it</strong> means you could do a question now.</p></div>
+  </div>
+  <p class="sub" style="margin-top:12px">Same buttons, different meaning. The rating changes nothing about the order you work in. It sets your expectation for how many bursts a chapter should take, so a "Nothing" that lands in two is a win you can see and a "Still have it" that needs six is a flag.</p>
+
+  <h2>Sources</h2>
+  <p class="sub">All free. Each is linked from every chapter card, so you shouldn't need this list often. Dr Frost's two courses follow the Pearson textbook chapters exactly, which is also the order Maths Genie uses, so the three sources line up chapter for chapter.</p>
+  <div class="links">
+    <a href="https://www.drfrost.org/explorer.php?coid=13010" target="_blank" rel="noopener">Dr Frost, Book 1/AS course</a>
+    <a href="https://www.drfrost.org/explorer.php?cuid=287454" target="_blank" rel="noopener">Dr Frost, Book 2 course</a>
+    <a href="https://www.drfrost.org/explorer.php?coid=17827" target="_blank" rel="noopener">Dr Frost, GCSE to A Level transition</a>
+    <a href="https://old.mathsgenie.co.uk/newalevel.php" target="_blank" rel="noopener">Maths Genie, lessons</a>
+    <a href="https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/" target="_blank" rel="noopener">PMT, topic questions</a>
+    <a href="https://www.examsolutions.net/a-level-maths/edexcel/" target="_blank" rel="noopener">ExamSolutions, fallback</a>
+  </div>
+
+  <h2>Dates that bite</h2>
+  <table class="dates">
+    <tr class="hard"><td>Now</td><td>Confirm the centre booking for both of you, both years, with access arrangements on the record in writing.</td></tr>
+    <tr><td>Week one</td><td>Saad: the Dr Frost <a href="https://www.drfrost.org/explorer.php?coid=17827" target="_blank" rel="noopener">GCSE to A Level transition</a> course, twelve short modules, before Chapter 1. Both: download the large data set. Paper 3 examines it.</td></tr>
+    <tr><td>20 Dec 2026</td><td>AS complete. All 24 Year 1 chapters landed or parked.</td></tr>
+    <tr><td>Mid-Jan 2027</td><td>First full timed paper. Expect a low score. It's a map.</td></tr>
+    <tr class="hard"><td>21 Feb 2027</td><td>Pearson entry deadline. Double fees from 22 February, treble from 22 April.</td></tr>
+    <tr><td>12 Mar 2027</td><td>Year 2 complete. Pass two starts: parked chapters, textbook end-of-chapter exercises, full papers, mistakes log.</td></tr>
+    <tr><td>~21 Mar 2027</td><td>Access arrangements deadline. Centre's internal date is earlier.</td></tr>
+    <tr><td>26 May 2027</td><td>Paper 1, Pure. Afternoon.</td></tr>
+    <tr><td>9 Jun 2027</td><td>Paper 2, Pure.</td></tr>
+    <tr><td>16 Jun 2027</td><td>Paper 3, Statistics and Mechanics.</td></tr>
+  </table>
+  <p class="note">Three papers, two hours, 100 marks each. No coursework. Everything here saves to this browser only, so open the link on your own device and it keeps your own state.</p>
+</section>
+</div>
+<script>
+var CH=[[0,"Algebraic Expressions","Pure",1,7,"https://old.mathsgenie.co.uk/a-level-year-1-questions-algebraic-expressions.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["1.1 Index Laws","https://old.mathsgenie.co.uk/a-level-year-1-index-laws.php"],["1.2 Expanding Brackets","https://old.mathsgenie.co.uk/a-level-year-1-expanding-brackets.php"],["1.3 Factorising","https://old.mathsgenie.co.uk/a-level-year-1-factorising.php"],["1.4 Negative and Fractional Indices","https://old.mathsgenie.co.uk/a-level-year-1-negative-and-fractional-indices.php"],["1.5 Surds","https://old.mathsgenie.co.uk/a-level-year-1-surds.php"]],"https://www.drfrost.org/explorer.php?cuid=287431"],[1,"Quadratics","Pure",1,7,"https://old.mathsgenie.co.uk/a-level-year-1-questions-quadratics.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["2.1 Solving Quadratics","https://old.mathsgenie.co.uk/a-level-year-1-solving-quadratics.php"],["2.2 Completing the Square","https://old.mathsgenie.co.uk/a-level-year-1-completing-the-square.php"],["2.3 Sketching Quadratic Graphs","https://old.mathsgenie.co.uk/a-level-year-1-sketching-quadratic-graphs.php"],["2.4 The Discriminant","https://old.mathsgenie.co.uk/a-level-year-1-the-discriminant.php"],["2.5 Modelling with Quadratics","https://old.mathsgenie.co.uk/a-level-year-1-modelling-with-quadratics.php"]],"https://www.drfrost.org/explorer.php?cuid=287432"],[2,"Equations and Inequalities","Pure",1,8,"https://old.mathsgenie.co.uk/a-level-year-1-questions-equations-and-inequalities.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["3.1 Linear Simultaneous Equations","https://old.mathsgenie.co.uk/a-level-year-1-linear-simultaneous-equations.php"],["3.2 Quadratic Simultaneous Equations","https://old.mathsgenie.co.uk/a-level-year-1-quadratic-simultaneous-equations.php"],["3.3 Simultaneous Equations on Graphs","https://old.mathsgenie.co.uk/a-level-year-1-simultaneous-equations-on-a-graph.php"],["3.4 Linear Inequalities","https://old.mathsgenie.co.uk/a-level-year-1-linear-inequalities-and-set-notation.php"],["3.5 Quadratic Inequalities","https://old.mathsgenie.co.uk/a-level-year-1-quadratic-inequalities.php"],["3.6 Inequalities on Graphs","https://old.mathsgenie.co.uk/a-level-year-1-inequalities-on-a-graph.php"]],"https://www.drfrost.org/explorer.php?cuid=287433"],[3,"Graphs and Transformations","Pure",1,9,"https://old.mathsgenie.co.uk/a-level-year-1-questions-graphs-and-transformations.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["4.1 Cubic Graphs","https://old.mathsgenie.co.uk/a-level-year-1-cubic-graphs.php"],["4.2 Quartic Graphs","https://old.mathsgenie.co.uk/a-level-year-1-quartic-graphs.php"],["4.3 Reciprocal Graphs","https://old.mathsgenie.co.uk/a-level-year-1-reciprocal-graphs.php"],["4.4 Points of Intersection","https://old.mathsgenie.co.uk/a-level-year-1-points-of-intersection.php"],["4.5 Translating Graphs","https://old.mathsgenie.co.uk/a-level-year-1-translating-graphs.php"],["4.6 Stretching Graphs","https://old.mathsgenie.co.uk/a-level-year-1-stretching-graphs.php"],["4.7 Transforming Functions","https://old.mathsgenie.co.uk/a-level-year-1-transforming-functions.php"]],"https://www.drfrost.org/explorer.php?cuid=287434"],[4,"Straight Line Graphs","Pure",1,7,"https://old.mathsgenie.co.uk/a-level-year-1-questions-straight-line-graphs.php",[["Coordinate Geometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/coordinate-geometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["5.1 y = mx + c","https://old.mathsgenie.co.uk/a-level-year-1-linear-graphs.php"],["5.2 Equations of Straight Lines","https://old.mathsgenie.co.uk/a-level-year-1-equations-of-straight-lines.php"],["5.3 Parallel and Perpendicular Lines","https://old.mathsgenie.co.uk/a-level-year-1-parallel-and-perpendicular-lines.php"],["5.4 Length and Area","https://old.mathsgenie.co.uk/a-level-year-1-length-and-area.php"],["5.5 Modelling with Straight Lines","https://old.mathsgenie.co.uk/a-level-year-1-modelling-with-straight-lines.php"]],"https://www.drfrost.org/explorer.php?cuid=287435"],[5,"Circles","Pure",1,7,"https://old.mathsgenie.co.uk/a-level-year-1-questions-circles.php",[["Coordinate Geometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/coordinate-geometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["6.1 Midpoints and Perpendicular Bisectors","https://old.mathsgenie.co.uk/a-level-year-1-midpoints-and-perpendicular-bisectors.php"],["6.2 Equation of a Circle","https://old.mathsgenie.co.uk/a-level-year-1-the-equation-of-a-circle.php"],["6.3 Intersections of Straight Lines and Circles","https://old.mathsgenie.co.uk/a-level-year-1-intersections-of-straight-lines-and-circles.php"],["6.4 Use Tangent and Chord Properties","https://old.mathsgenie.co.uk/a-level-year-1-using-tangent-and-chord-properties.php"],["6.5 Circles and Triangles","https://old.mathsgenie.co.uk/a-level-year-1-circles-and-triangles.php"]],"https://www.drfrost.org/explorer.php?cuid=287436"],[6,"Algebraic Methods","Pure",1,7,"https://old.mathsgenie.co.uk/a-level-year-1-questions-algebraic-methods.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"],["Proof","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/proof/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["7.1 Algebraic Fractions","https://old.mathsgenie.co.uk/a-level-year-1-algebraic-fractions.php"],["7.2 Dividing Polynomials","https://old.mathsgenie.co.uk/a-level-year-1-dividing-polynomials-using-long-division.php"],["7.3 The Factor Theorem","https://old.mathsgenie.co.uk/a-level-year-1-the-factor-theorem.php"],["7.4 Mathematical Proof","https://old.mathsgenie.co.uk/a-level-year-1-mathematical-proof.php"],["7.5 Methods of Proof","https://old.mathsgenie.co.uk/a-level-year-1-methods-of-proof.php"]],"https://www.drfrost.org/explorer.php?cuid=287437"],[7,"The Binomial Expansion","Pure",1,7,"https://old.mathsgenie.co.uk/a-level-year-1-questions-the-binomial-expansion.php",[["Sequences and Series","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/sequences-and-series/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["8.1 Pascal's Triangle","https://old.mathsgenie.co.uk/a-level-year-1-pascals-triangle.php"],["8.2 Factorial Notation","https://old.mathsgenie.co.uk/a-level-year-1-factorial-notation.php"],["8.3 The Binomial Expansion","https://old.mathsgenie.co.uk/a-level-year-1-the-binomial-expansion.php"],["8.4 Solving Binomial Problems","https://old.mathsgenie.co.uk/a-level-year-1-solving-binomial-problems.php"],["8.5 Binomial Estimation","https://old.mathsgenie.co.uk/a-level-year-1-binomial-estimation.php"]],"https://www.drfrost.org/explorer.php?cuid=287438"],[8,"Trigonometric Ratios","Pure",1,8,"https://old.mathsgenie.co.uk/a-level-year-1-questions-trigonometric-ratios.php",[["Trigonometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/trigonometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["9.1 The Cosine Rule","https://old.mathsgenie.co.uk/a-level-year-1-the-cosine-rule.php"],["9.2 The Sine Rule","https://old.mathsgenie.co.uk/a-level-year-1-the-sine-rule.php"],["9.3 Areas of Triangles","https://old.mathsgenie.co.uk/a-level-year-1-areas-of-triangles.php"],["9.4 Solving Triangle Problems","https://old.mathsgenie.co.uk/a-level-year-1-solving-triangle-problems.php"],["9.5 Graphs of Sine, Cosine and Tangent","https://old.mathsgenie.co.uk/a-level-year-1-graphs-of-sin-cos-and-tan.php"],["9.6 Transforming Trigonometric Graphs","https://old.mathsgenie.co.uk/a-level-year-1-transforming-trigonometric-graphs.php"]],"https://www.drfrost.org/explorer.php?cuid=287439"],[9,"Trigonometric Identities and Equations","Pure",1,8,"https://old.mathsgenie.co.uk/a-level-year-1-questions-trigonometric-identities-and-equations.php",[["Trigonometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/trigonometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["10.1 Angles in all four Quadrants","https://old.mathsgenie.co.uk/a-level-year-1-angles-in-all-four-quadrants.php"],["10.2 Exact Values of Trigonometric Ratios","https://old.mathsgenie.co.uk/a-level-year-1-exact-values-of-trigonometric-ratios.php"],["10.3 Trigonometric Identities","https://old.mathsgenie.co.uk/a-level-year-1-trigonometric-identities.php"],["10.4 Solving Trigonometric Equations","https://old.mathsgenie.co.uk/a-level-year-1-solving-trigonometric-equations.php"],["10.5 Harder Trigonometric Equations","https://old.mathsgenie.co.uk/a-level-year-1-harder-trigonometric-equations.php"],["10.6 Equations and Identities","https://old.mathsgenie.co.uk/a-level-year-1-trigonometric-equations-and-identities.php"]],"https://www.drfrost.org/explorer.php?cuid=287440"],[10,"Vectors","Pure",1,8,"https://old.mathsgenie.co.uk/a-level-year-1-questions-vectors.php",[["Vectors","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/vectors/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["11.1 Vectors","https://old.mathsgenie.co.uk/a-level-year-1-vectors.php"],["11.2 Representing Vectors","https://old.mathsgenie.co.uk/a-level-year-1-representing-vectors.php"],["11.3 Magnitude and Direction","https://old.mathsgenie.co.uk/a-level-year-1-magnitude-and-direction.php"],["11.4 Position Vectors","https://old.mathsgenie.co.uk/a-level-year-1-position-vectors.php"],["11.5 Solving Geometric Problems","https://old.mathsgenie.co.uk/a-level-year-1-solving-geometric-problems.php"],["11.6 Modelling with Vectors","https://old.mathsgenie.co.uk/a-level-year-1-modelling-with-vectors.php"]],"https://www.drfrost.org/explorer.php?cuid=287441"],[11,"Differentiation","Pure",1,13,"https://old.mathsgenie.co.uk/a-level-year-1-questions-differentiation.php",[["Differentiation","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/differentiation/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["12.1 Gradients of Curves","https://old.mathsgenie.co.uk/a-level-year-1-gradients-of-curves.php"],["12.2 Differentiation from first principles","https://old.mathsgenie.co.uk/a-level-year-1-differentiation-from-first-principles.php"],["12.3 Differentiating x^n","https://old.mathsgenie.co.uk/a-level-year-1-differentiating.php"],["12.4 Differentiating Quadratics","https://old.mathsgenie.co.uk/a-level-year-1-differentiating-quadratics.php"],["12.5 Differentiating functions with two or more terms","https://old.mathsgenie.co.uk/a-level-year-1-differentiating-functions-with-two-or-more-terms.php"],["12.6 Gradients, Tangents and Normals","https://old.mathsgenie.co.uk/a-level-year-1-gradients-tangents-and-normals.php"],["12.7 Increasing and Decreasing Functions","https://old.mathsgenie.co.uk/a-level-year-1-increasing-and-decreasing-functions.php"],["12.8 Second Order Derivatives","https://old.mathsgenie.co.uk/a-level-year-1-second-order-derivatives.php"],["12.9 Stationary Points","https://old.mathsgenie.co.uk/a-level-year-1-stationary-points.php"],["12.10 Sketching Gradient Functions","https://old.mathsgenie.co.uk/a-level-year-1-sketching-gradient-functions.php"],["12.11 Modelling with Differentiation","https://old.mathsgenie.co.uk/a-level-year-1-modelling-with-differentiation.php"]],"https://www.drfrost.org/explorer.php?cuid=287442"],[12,"Integration","Pure",1,9,"https://old.mathsgenie.co.uk/a-level-year-1-questions-integration.php",[["Integration","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/integration/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["13.1 Integrating x^n","https://old.mathsgenie.co.uk/a-level-year-1-integrating.php"],["13.2 Indefinite Integrals","https://old.mathsgenie.co.uk/a-level-year-1-indefinite-integrals.php"],["13.3 Finding Functions","https://old.mathsgenie.co.uk/a-level-year-1-finding-functions.php"],["13.4 Definite Integrals","https://old.mathsgenie.co.uk/a-level-year-1-definite-integrals.php"],["13.5 Areas under Curves","https://old.mathsgenie.co.uk/a-level-year-1-areas-under-curves.php"],["13.6 Areas under the x-axis","https://old.mathsgenie.co.uk/a-level-year-1-areas-under-the-x-axis.php"],["13.7 Areas between curves and lines","https://old.mathsgenie.co.uk/a-level-year-1-areas-between-curves-and-lines.php"]],"https://www.drfrost.org/explorer.php?cuid=287443"],[13,"Exponentials and Logarithms","Pure",1,10,"https://old.mathsgenie.co.uk/a-level-year-1-questions-exponentials-and-logs.php",[["Exponentials and Logarithms","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/exponentials-and-logarithms/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["14.1 Exponential Functions","https://old.mathsgenie.co.uk/a-level-year-1-exponential-functions.php"],["14.2 y = e^x","https://old.mathsgenie.co.uk/a-level-year-1-e.php"],["14.3 Exponential Modelling","https://old.mathsgenie.co.uk/a-level-year-1-exponential-modelling.php"],["14.4 Logarithms","https://old.mathsgenie.co.uk/a-level-year-1-logarithms.php"],["14.5 Laws of Logarithms","https://old.mathsgenie.co.uk/a-level-year-1-laws-of-logarithms.php"],["14.6 Solving Equations using Logarithms","https://old.mathsgenie.co.uk/a-level-year-1-solving-equations-using-logarithms.php"],["14.7 Working with Natural Logarithms","https://old.mathsgenie.co.uk/a-level-year-1-working-with-natural-logarithms.php"],["14.8 Logarithms and Non-Linear Data","https://old.mathsgenie.co.uk/a-level-year-1-logarithms-and-non-linear-data.php"]],"https://www.drfrost.org/explorer.php?cuid=287444"],[14,"Data Collection","Stats",1,6,"https://old.mathsgenie.co.uk/a-level-stats-questions-data-collection.php",[["Sampling","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/sampling/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Populations and Samples","https://old.mathsgenie.co.uk/a-level-stats-populations-and-samples.php"],["Sampling","https://old.mathsgenie.co.uk/a-level-stats-random-sampling.php"],["Non-Random Sampling","https://old.mathsgenie.co.uk/a-level-stats-non-random-sampling.php"],["Types of Data","https://old.mathsgenie.co.uk/a-level-stats-types-of-data.php"]],"https://www.drfrost.org/explorer.php?cuid=287445"],[15,"Measures of Location and Spread","Stats",1,7,"https://old.mathsgenie.co.uk/a-level-stats-questions-measures-of-location-and-spread.php",[["Data Presentation","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/data-presentation-and-interpretation/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Measures of Central Tendency","https://old.mathsgenie.co.uk/a-level-stats-measures-of-central-tendency.php"],["Other Measures of Location","https://old.mathsgenie.co.uk/a-level-stats-other-measures-of-location.php"],["Measures of Spread","https://old.mathsgenie.co.uk/a-level-stats-measures-of-spread.php"],["Variance and Standard Deviation","https://old.mathsgenie.co.uk/a-level-stats-variance-and-standard-deviation.php"],["Coding","https://old.mathsgenie.co.uk/a-level-stats-coding.php"]],"https://www.drfrost.org/explorer.php?cuid=287446"],[16,"Representations of Data","Stats",1,7,"https://old.mathsgenie.co.uk/a-level-stats-questions-representations-of-data.php",[["Data Presentation","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/data-presentation-and-interpretation/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Outliers","https://old.mathsgenie.co.uk/a-level-stats-outliers.php"],["Box Plots","https://old.mathsgenie.co.uk/a-level-stats-box-plots.php"],["Cumulative Frequency","https://old.mathsgenie.co.uk/a-level-stats-cumulative-frequency.php"],["Histograms","https://old.mathsgenie.co.uk/a-level-stats-histograms.php"],["Comparing Data","https://old.mathsgenie.co.uk/a-level-stats-comparing-data.php"]],"https://www.drfrost.org/explorer.php?cuid=287447"],[17,"Correlation","Stats",1,4,"https://old.mathsgenie.co.uk/a-level-stats-questions-correlation.php",[["Data Presentation","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/data-presentation-and-interpretation/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Correlation","https://old.mathsgenie.co.uk/a-level-stats-correlation.php"],["Linear Regression","https://old.mathsgenie.co.uk/a-level-stats-linear-regression.php"]],"https://www.drfrost.org/explorer.php?cuid=287448"],[18,"Probability","Stats",1,6,"https://old.mathsgenie.co.uk/a-level-stats-questions-probability.php",[["Probability","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/probability/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Calculating Probabilities","https://old.mathsgenie.co.uk/a-level-stats-calculating-probability.php"],["Venn Diagrams","https://old.mathsgenie.co.uk/a-level-stats-venn-diagrams.php"],["Mutually Exclusive and Independent Events","https://old.mathsgenie.co.uk/a-level-stats-mutually-exclusive-and-independent-events.php"],["Tree Diagrams","https://old.mathsgenie.co.uk/a-level-stats-tree-diagrams.php"]],"https://www.drfrost.org/explorer.php?cuid=287449"],[19,"Statistical Distributions","Stats",1,5,"https://old.mathsgenie.co.uk/a-level-stats-questions-statistical-distributions.php",[["Statistical Distributions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/statistical-distributions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Probability Distributions","https://old.mathsgenie.co.uk/a-level-stats-probability-distributions.php"],["The Binomial Distribution","https://old.mathsgenie.co.uk/a-level-stats-the-binomial-distribution.php"],["Cumulative Probabilities","https://old.mathsgenie.co.uk/a-level-stats-cumulative-probabilities.php"]],"https://www.drfrost.org/explorer.php?cuid=287450"],[20,"Hypothesis Testing","Stats",1,5,"https://old.mathsgenie.co.uk/a-level-stats-questions-hypothesis-testing.php",[["Hypothesis Testing","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/hypothesis-testing/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Hypothesis Testing","https://old.mathsgenie.co.uk/a-level-stats-hypothesis-testing.php"],["Finding Critical Values","https://old.mathsgenie.co.uk/a-level-stats-finding-critical-values.php"],["One-Tailed Tests","https://old.mathsgenie.co.uk/a-level-stats-one-tailed-tests.php"]],"https://www.drfrost.org/explorer.php?cuid=287451"],[21,"Constant Acceleration","Mech",1,8,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-constant-acceleration.php",[["Quantities and Units","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/quantities-and-units-in-mechanics/"],["Kinematics","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/kinematics/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Working with Vectors","https://old.mathsgenie.co.uk/a-level-mechanics-working-with-vectors.php"],["Displacement-Time Graphs","https://old.mathsgenie.co.uk/a-level-mechanics-displacement-time-graphs.php"],["Velocity-Time Graphs","https://old.mathsgenie.co.uk/a-level-mechanics-velocity-time-graphs.php"],["Constant Acceleration Formulae 1","https://old.mathsgenie.co.uk/a-level-mechanics-constant-acceleration-formulae-1.php"],["Constant Acceleration Formulae 2","https://old.mathsgenie.co.uk/a-level-mechanics-constant-acceleration-formulae-2.php"],["Vertical Motion Under Gravity","https://old.mathsgenie.co.uk/a-level-mechanics-vertical-motion-under-gravity.php"]],"https://www.drfrost.org/explorer.php?cuid=287452"],[22,"Forces and Motion","Mech",1,8,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-forces-and-motion.php",[["Forces and Newton's Laws","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/forces-and-newtons-laws/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Force Diagrams","https://old.mathsgenie.co.uk/a-level-mechanics-force-diagrams.php"],["Forces as Vectors","https://old.mathsgenie.co.uk/a-level-mechanics-forces-as-vectors.php"],["Forces and Acceleration","https://old.mathsgenie.co.uk/a-level-mechanics-forces-and-acceleration.php"],["Motion in 2 Dimensions","https://old.mathsgenie.co.uk/a-level-mechanics-motion-in-2-dimensions.php"],["Connected Particles","https://old.mathsgenie.co.uk/a-level-mechanics-connected-particles.php"],["Pulleys","https://old.mathsgenie.co.uk/a-level-mechanics-pulleys.php"]],"https://www.drfrost.org/explorer.php?cuid=287453"],[23,"Variable Acceleration","Mech",1,7,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-variable-acceleration.php",[["Kinematics","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/kinematics/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Functions of Time","https://old.mathsgenie.co.uk/a-level-mechanics-functions-of-time.php"],["Using Differentiation","https://old.mathsgenie.co.uk/a-level-mechanics-using-differentiation.php"],["Maxima and Minima Problems","https://old.mathsgenie.co.uk/a-level-mechanics-maxima-and-minima-problems.php"],["Using Integration","https://old.mathsgenie.co.uk/a-level-mechanics-using-integration.php"],["Constant Acceleration Formulae","https://old.mathsgenie.co.uk/a-level-mechanics-using-integration-constant-acceleration-formulae.php"]],"https://www.drfrost.org/explorer.php?cuid=403281"],[24,"Algebraic Methods","Pure",2,7,"https://old.mathsgenie.co.uk/a-level-year-2-questions-algebraic-methods.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"],["Proof","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/proof/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["1.1 Proof by Contradiction","https://old.mathsgenie.co.uk/a-level-year-2-proof-by-contradiction.php"],["1.2 Algebraic Fractions","https://old.mathsgenie.co.uk/a-level-year-2-algebraic-fractions.php"],["1.3 Partial Fractions","https://old.mathsgenie.co.uk/a-level-year-2-partial-fractions.php"],["1.4 Repeated Factors","https://old.mathsgenie.co.uk/a-level-year-2-repeated-factors.php"],["1.5 Algebraic Division","https://old.mathsgenie.co.uk/a-level-year-2-algebraic-division.php"]],"https://www.drfrost.org/explorer.php?cuid=287454"],[25,"Functions and Graphs","Pure",2,9,"https://old.mathsgenie.co.uk/a-level-year-2-questions-functions-and-graphs.php",[["Algebra and Functions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/algebra-and-functions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["2.1 The Modulus Function","https://old.mathsgenie.co.uk/a-level-year-2-the-modulus-function.php"],["2.2 Functions and Mappings","https://old.mathsgenie.co.uk/a-level-year-2-functions-and-mappings.php"],["2.3 Composite Functions","https://old.mathsgenie.co.uk/a-level-year-2-composite-functions.php"],["2.4 Inverse Functions","https://old.mathsgenie.co.uk/a-level-year-2-inverse-functions.php"],["2.5 y=","f(x)| and y=f(|x|)|https://old.mathsgenie.co.uk/a-level-year-2-drawing-modulus-functions.php"],["2.6 Combining Transformations","https://old.mathsgenie.co.uk/a-level-year-2-combining-transformations.php"],["2.7 Solving Modulus Problems","https://old.mathsgenie.co.uk/a-level-year-2-solving-modulus-problems.php"]],"https://www.drfrost.org/explorer.php?cuid=287455"],[26,"Sequences and Series","Pure",2,10,"https://old.mathsgenie.co.uk/a-level-year-2-questions-sequences-and-series.php",[["Sequences and Series","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/sequences-and-series/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["3.1 Arithmetic Sequences","https://old.mathsgenie.co.uk/a-level-year-2-arithmetic-sequences.php"],["3.2 Arithmetic Series","https://old.mathsgenie.co.uk/a-level-year-2-arithmetic-series.php"],["3.3 Geometric Sequences","https://old.mathsgenie.co.uk/a-level-year-2-geometric-sequences.php"],["3.4 Geometric Series","https://old.mathsgenie.co.uk/a-level-year-2-geometric-series.php"],["3.5 Sum to Infinity","https://old.mathsgenie.co.uk/a-level-year-2-sum-to-infinity.php"],["3.6 Sigma Notation","https://old.mathsgenie.co.uk/a-level-year-2-sigma-notation.php"],["3.7 Recurrence Relations","https://old.mathsgenie.co.uk/a-level-year-2-recurrence-relations.php"],["3.8 Modelling with Series","https://old.mathsgenie.co.uk/a-level-year-2-modelling-with-series.php"]],"https://www.drfrost.org/explorer.php?cuid=287456"],[27,"Binomial Expansion","Pure",2,5,"https://old.mathsgenie.co.uk/a-level-year-2-questions-binomial-expansion.php",[["Sequences and Series","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/sequences-and-series/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["4.1 Expanding (1 + x)^n","https://old.mathsgenie.co.uk/a-level-year-2-binomial-expansion-expanding-1.php"],["4.2 Expanding (a + bx)^n","https://old.mathsgenie.co.uk/a-level-year-2-binomial-expansion-expanding-2.php"],["4.3 Using Partial Fractions","https://old.mathsgenie.co.uk/a-level-year-2-using-partial-fractions.php"]],"https://www.drfrost.org/explorer.php?cuid=287457"],[28,"Radians","Pure",2,7,"https://old.mathsgenie.co.uk/a-level-year-2-questions-radians.php",[["Trigonometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/trigonometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["5.1 Radian Measure","https://old.mathsgenie.co.uk/a-level-year-2-radian-measure.php"],["5.2 Arc Length","https://old.mathsgenie.co.uk/a-level-year-2-arc-length.php"],["5.3 Areas of Sectors and Segments","https://old.mathsgenie.co.uk/a-level-year-2-areas-of-sectors-and-segments.php"],["5.4 Solving Trigonometric Equations","https://old.mathsgenie.co.uk/a-level-year-2-solving-trigonometric-equations-in-radians.php"],["5.5 Small Angle Approximations","https://old.mathsgenie.co.uk/a-level-year-2-small-angle-approximations.php"]],"https://www.drfrost.org/explorer.php?cuid=287458"],[29,"Trigonometric Functions","Pure",2,7,"https://old.mathsgenie.co.uk/a-level-year-2-questions-trigonometric-functions.php",[["Trigonometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/trigonometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["6.1 Secant, Cosecant and Cotangent","https://old.mathsgenie.co.uk/a-level-year-2-sec-cosec-and-cot.php"],["6.2 Graphs of Sec x, Cosec x and Cot x","https://old.mathsgenie.co.uk/a-level-year-2-graphs-of-sec-cosec-and-cot.php"],["6.3 Using Sec x, Cosec x and Cot x","https://old.mathsgenie.co.uk/a-level-year-2-using-sec-cosec-and-cot.php"],["6.4 Trigonometric Identities","https://old.mathsgenie.co.uk/a-level-year-2-more-trigonometric-identities.php"],["6.5 Inverse Trigonometric Functions","https://old.mathsgenie.co.uk/a-level-year-2-inverse-trigonometric-functions.php"]],"https://www.drfrost.org/explorer.php?cuid=287459"],[30,"Trigonometry and Modelling","Pure",2,8,"https://old.mathsgenie.co.uk/a-level-year-2-questions-trigonometry-and-modelling.php",[["Trigonometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/trigonometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["7.1 Addition Formulae","https://old.mathsgenie.co.uk/a-level-year-2-addition-formulae.php"],["7.2 Double Angle Formulae","https://old.mathsgenie.co.uk/a-level-year-2-double-angle-formulae.php"],["7.3 Solving Trigonometric Equations","https://old.mathsgenie.co.uk/a-level-year-2-solving-trig-equations-using-addition-formulae.php"],["7.4 Simplifying a cos x +- b sin x","https://old.mathsgenie.co.uk/a-level-year-2-simplifying-trig-with-the-addition-formula.php"],["7.5 Proving Trigonometric Identities","https://old.mathsgenie.co.uk/a-level-year-2-proving-trigonometric-identities.php"],["7.6 Modelling with Trigonometric Functions","https://old.mathsgenie.co.uk/a-level-year-2-modelling-with-trigonometric-functions.php"]],"https://www.drfrost.org/explorer.php?cuid=287460"],[31,"Parametric Equations","Pure",2,7,"https://old.mathsgenie.co.uk/a-level-year-2-questions-parametric-equations.php",[["Coordinate Geometry","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/coordinate-geometry/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["8.1 Parametric Equations","https://old.mathsgenie.co.uk/a-level-year-2-parametric-equations.php"],["8.2 Using Trigonometric Identities","https://old.mathsgenie.co.uk/a-level-year-2-parametric-equations-using-trig-identities.php"],["8.3 Curve Sketching","https://old.mathsgenie.co.uk/a-level-year-2-parametric-equations-curve-sketching.php"],["8.4 Points of Intersection","https://old.mathsgenie.co.uk/a-level-year-2-parametric-equations-points-of-intersection.php"],["8.5 Modelling with Parametric Equations","https://old.mathsgenie.co.uk/a-level-year-2-modelling-with-parametric-equations.php"]],"https://www.drfrost.org/explorer.php?cuid=287461"],[32,"Differentiation","Pure",2,12,"https://old.mathsgenie.co.uk/a-level-year-2-questions-differentiation.php",[["Differentiation","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/differentiation/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["9.1 Differentiating sin x and cos x","https://old.mathsgenie.co.uk/a-level-year-2-differentiating-sin-and-cos.php"],["9.2 Differentiating exponentials and logarithms","https://old.mathsgenie.co.uk/a-level-year-2-differentiating-exponentials-and-logs.php"],["9.3 The Chain Rule","https://old.mathsgenie.co.uk/a-level-year-2-the-chain-rule.php"],["9.4 The Product Rule","https://old.mathsgenie.co.uk/a-level-year-2-the-product-rule.php"],["9.5 The Quotient Rule","https://old.mathsgenie.co.uk/a-level-year-2-the-quotient-rule.php"],["9.6 Differentiating Trigonometric Functions","https://old.mathsgenie.co.uk/a-level-year-2-differentiating-trig-functions.php"],["9.7 Parametric Differentiation","https://old.mathsgenie.co.uk/a-level-year-2-parametric-differentiation.php"],["9.8 Implicit Differentiation","https://old.mathsgenie.co.uk/a-level-year-2-implicit-differentiation.php"],["9.9 Using Second Derivatives","https://old.mathsgenie.co.uk/a-level-year-2-using-second-derivatives.php"],["9.10 Rates of Change","https://old.mathsgenie.co.uk/a-level-year-2-rates-of-change.php"]],"https://www.drfrost.org/explorer.php?cuid=287462"],[33,"Numerical Methods","Pure",2,6,"https://old.mathsgenie.co.uk/a-level-year-2-questions-numerical-methods.php",[["Numerical Methods","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/numerical-methods/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["10.1 Locating Roots","https://old.mathsgenie.co.uk/a-level-year-2-locating-roots.php"],["10.2 Iteration","https://old.mathsgenie.co.uk/a-level-year-2-iteration.php"],["10.3 The Newton-Raphson Method","https://old.mathsgenie.co.uk/a-level-year-2-newton-raphson.php"],["10.4 Applications to Modelling","https://old.mathsgenie.co.uk/a-level-year-2-newton-raphson-modelling.php"]],"https://www.drfrost.org/explorer.php?cuid=287463"],[34,"Integration","Pure",2,13,"https://old.mathsgenie.co.uk/a-level-year-2-questions-integration.php",[["Integration","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/integration/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["11.1 Integrating Standard Functions","https://old.mathsgenie.co.uk/a-level-year-2-integrating-standard-functions.php"],["11.2 Integrating f(ax + b)","https://old.mathsgenie.co.uk/a-level-year-2-integrating-f(ax+b).php"],["11.3 Using Trigonometric Identities","https://old.mathsgenie.co.uk/a-level-year-2-integrating-trig-identities.php"],["11.4 Reverse Chain Rule","https://old.mathsgenie.co.uk/a-level-year-2-integrating-reverse-chain-rule.php"],["11.5 Integration by Substitution","https://old.mathsgenie.co.uk/a-level-year-2-integration-by-substitution.php"],["11.6 Integration by Parts","https://old.mathsgenie.co.uk/a-level-year-2-integration-by-parts.php"],["11.7 Partial Fractions","https://old.mathsgenie.co.uk/a-level-year-2-integration-using-partial-fractions.php"],["11.8 Finding Areas","https://old.mathsgenie.co.uk/a-level-year-2-integration-finding-areas.php"],["11.9 The Trapezium Rule","https://old.mathsgenie.co.uk/a-level-year-2-the-trapezium-rule.php"],["11.10 Solving Differential Equations","https://old.mathsgenie.co.uk/a-level-year-2-solving-differential-equations.php"],["11.11 Modelling with Differential Equations","https://old.mathsgenie.co.uk/a-level-year-2-modelling-with-differential-equations.php"]],"https://www.drfrost.org/explorer.php?cuid=287464"],[35,"Vectors","Pure",2,6,"https://old.mathsgenie.co.uk/a-level-year-2-questions-3d-vectors.php",[["Vectors","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/vectors/"]],"https://www.examsolutions.net/a-level-maths/edexcel/pure-maths-a-level-tutorials/",[["12.1 3D Coordinates","https://old.mathsgenie.co.uk/a-level-year-2-3d-coordinates.php"],["12.2 Vectors in 3D","https://old.mathsgenie.co.uk/a-level-year-2-vectors-in-3d.php"],["12.3 Solving Geometric Problems","https://old.mathsgenie.co.uk/a-level-year-2-solving-geometric-problems.php"],["12.4 Application to Mechanics","https://old.mathsgenie.co.uk/a-level-year-2-application-to-mechanics.php"]],"https://www.drfrost.org/explorer.php?cuid=287465"],[36,"Regression, Correlation and Hypothesis Testing","Stats",2,5,"https://old.mathsgenie.co.uk/a-level-stats-questions-regression-correlation-and-hypothesis-testing.php",[["Data Presentation","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/data-presentation-and-interpretation/"],["Hypothesis Testing","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/hypothesis-testing/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Exponential Models","https://old.mathsgenie.co.uk/a-level-statistics-exponential-models.php"],["Measuring Correlation","https://old.mathsgenie.co.uk/a-level-statistics-measuring-correlation.php"],["Hypothesis Testing for Zero Correlation","https://old.mathsgenie.co.uk/a-level-statistics-hypothesis-testing-for-zero-correlation.php"]],"https://www.drfrost.org/explorer.php?cuid=287466"],[37,"Conditional Probability","Stats",2,7,"https://old.mathsgenie.co.uk/a-level-stats-questions-conditional-probability.php",[["Probability","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/probability/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["Set Notation","https://old.mathsgenie.co.uk/a-level-statistics-set-notation.php"],["Conditional Probability","https://old.mathsgenie.co.uk/a-level-statistics-conditional-probability.php"],["Conditional Probabilities in Venn Diagrams","https://old.mathsgenie.co.uk/a-level-statistics-conditional-probability-in-venn-diagrams.php"],["Probability Formulae","https://old.mathsgenie.co.uk/a-level-statistics-probability-formulae.php"],["Tree Diagrams","https://old.mathsgenie.co.uk/a-level-statistics-tree-diagrams.php"]],"https://www.drfrost.org/explorer.php?cuid=287467"],[38,"The Normal Distribution","Stats",2,9,"https://old.mathsgenie.co.uk/a-level-stats-questions-the-normal-distribution.php",[["Statistical Distributions","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/statistical-distributions/"]],"https://www.examsolutions.net/a-level-maths/edexcel/statistics-a-level-tutorials/",[["The Normal Distribution","https://old.mathsgenie.co.uk/a-level-statistics-the-normal-distribution.php"],["Finding Probabilities for Normal Distributions","https://old.mathsgenie.co.uk/a-level-statistics-finding-probabilities-for-normal-distributions.php"],["The Inverse Normal Distribution Function","https://old.mathsgenie.co.uk/a-level-statistics-the-inverse-normal-distribution-function.php"],["The Standard Normal Distribution","https://old.mathsgenie.co.uk/a-level-statistics-the-standard-normal-distribution.php"],["Finding the mean and standard deviation","https://old.mathsgenie.co.uk/a-level-statistics-finding-the-mean-and-standard-deviation.php"],["Approximating a Binomial Distribution","https://old.mathsgenie.co.uk/a-level-statistics-approximating-a-binomial-distribution.php"],["Hypothesis Testing with the Normal Distribution","https://old.mathsgenie.co.uk/a-level-statistics-hypothesis-testing-with-the-normal-distribution.php"]],"https://www.drfrost.org/explorer.php?cuid=287468"],[39,"Moments","Mech",2,7,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-moments.php",[["Moments","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/moments/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Moments","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-moments.php"],["Resultant Moments","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-resultant-moments.php"],["Equilibrium","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-equilibrium.php"],["Centres of Mass","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-centres-of-mass.php"],["Tilting","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-tilting.php"]],"https://www.drfrost.org/explorer.php?cuid=287469"],[40,"Forces and Friction","Mech",2,5,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-forces-and-friction.php",[["Forces and Newton's Laws","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/forces-and-newtons-laws/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Resolving Forces","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-resolving-forces.php"],["Inclined Planes","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-inclined-planes.php"],["Friction","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-friction.php"]],"https://www.drfrost.org/explorer.php?cuid=287470"],[41,"Projectiles","Mech",2,6,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-projectiles.php",[["Kinematics","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/kinematics/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Horizontal Projection","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-horizontal-projection.php"],["Horizontal and Vertical Components","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-horizontal-and-vertical-components.php"],["Projection at Any Angle","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-projection-at-any-angle.php"],["Projectile Motion Formulae","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-projectile-motion-formulae.php"]],"https://www.drfrost.org/explorer.php?cuid=287471"],[42,"Applications of Forces","Mech",2,8,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-application-of-forces.php",[["Forces and Newton's Laws","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/forces-and-newtons-laws/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Static Particles","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-static-particles.php"],["Modelling with Statics","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-modelling-with-statics.php"],["Friction and Static Particles","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-friction-and-static-particles.php"],["Static Rigid Bodies","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-static-rigid-bodies.php"],["Dynamics and Inclined Planes","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-dynamics-and-inclined-planes.php"],["Connected Particles 2","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-connected-particles.php"]],"https://www.drfrost.org/explorer.php?cuid=287472"],[43,"Further Kinematics","Mech",2,7,"https://old.mathsgenie.co.uk/a-level-mechanics-questions-further-kinematics.php",[["Kinematics","https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/kinematics/"]],"https://www.examsolutions.net/a-level-maths/edexcel/mechanics-a-level-tutorials/",[["Vectors in Kinematics","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-vectors-in-kinematics.php"],["Vector Methods with Projectiles","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-vector-methods-with-projectiles.php"],["Variable Acceleration in One Dimension","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-variable-acceleration-in-one-dimension.php"],["Differentiating Vectors","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-differentiating-vectors.php"],["Integrating Vectors","https://old.mathsgenie.co.uk/a-level-year-2-mechanics-integrating-vectors.php"]],"https://www.drfrost.org/explorer.php?cuid=287473"]];
+(function(){
+"use strict";
+var i,j;
+var KEY="ma9_v2";
+/* ---- sync config: paste from Supabase > Project Settings > API ---- */
+var SUPA_URL="https://crzuneakinuqhmhkufxe.supabase.co";          // e.g. https://abcdefgh.supabase.co
+var SUPA_KEY="PASTE_ANON_PUBLIC_KEY";      // the anon / public key, not the service role
+var SECRETS={a:"Khhd-66aGROnkNn9gumjoHBC",b:"QaMAhGw7PNfFqq1-GyyL6IxY"};
+var SYNC={secret:null,id:null,ready:false,others:[],timer:null};
+var AS_DUE=new Date(2026,11,20), Y2_DUE=new Date(2027,2,12), P1=new Date(2027,4,26);
+var STRAND={Pure:"Pure",Stats:"Statistics",Mech:"Mechanics"};
+var PRIOR={a:["Nothing","Some","GCSE-solid"],b:["Gone","Half there","Still have it"]};
+var PRIORSUB={
+  a:"Rate each chapter once against GCSE: Nothing, Some, or GCSE-solid. It sets expectation, not order. Then work top to bottom.",
+  b:"Rate each chapter once against what you had before: Gone, Half there, or Still have it. It sets expectation, not order. Then work top to bottom."
+};
+var STATUS=["Not started","Open","Landed","Parked","Budget spent"];
+
+var store={a:blank("Saad",13),b:blank("Hammad",15)}, who="a";
+function blank(n,t){return{name:n,target:t,prior:{},bursts:{},ticks:{},done:{},budget:{},week:{},papers:[]};}
+function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.a&&o.b)store=o;}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}
+  if(SYNC.ready&&who===SYNC.id){clearTimeout(SYNC.timer);setSync("busy");SYNC.timer=setTimeout(push,600);}}
+function setSync(c){var el=document.getElementById("sync");if(el)el.className="sync "+c;}
+function rpc(fn,body){return fetch(SUPA_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+function push(){rpc("ma9_save",{p_secret:SYNC.secret,p_state:store[SYNC.id]}).then(function(){setSync("ok");}).catch(function(){setSync("err");});}
+function isRO(){return SYNC.ready&&who!==SYNC.id;}
+function me(){try{return localStorage.getItem(KEY+"_me");}catch(e){return null;}}
+function initSync(){
+  var id=me();
+  if(!id||!SECRETS[id]){setSync("off");return Promise.resolve();}
+  who=id;
+  if(!/^https?:/.test(SUPA_URL)){setSync("off");return Promise.resolve();}
+  SYNC.secret=SECRETS[id];
+  setSync("busy");
+  return rpc("ma9_load",{p_secret:SYNC.secret}).then(function(r){
+    SYNC.id=r.id;SYNC.ready=true;SYNC.others=r.others||[];
+    var srv=r.state&&Object.keys(r.state).length?r.state:null;
+    if(srv){store[r.id]=srv;}else{ /* first device: push local up */ }
+    if(r.name)store[r.id].name=r.name;
+    SYNC.others.forEach(function(o){if(o.state&&Object.keys(o.state).length)store[o.id]=o.state;if(o.name)store[o.id].name=o.name;});
+    who=r.id;
+    try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}
+    if(!srv)push();else setSync("ok");
+    var bs=document.querySelectorAll("#whorow .who");
+    for(var q=0;q<bs.length;q++){var pid=bs[q].getAttribute("data-p");bs[q].setAttribute("aria-pressed",pid===who?"true":"false");bs[q].textContent=store[pid].name;}
+  }).catch(function(){setSync("err");});
+}
+function S(){return store[who];}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function weekKey(){var t=today();var dow=(t.getDay()+6)%7;t.setDate(t.getDate()-dow);return t.getFullYear()+"-"+(t.getMonth()+1)+"-"+t.getDate();}
+function weeksUntil(d){return Math.max(0.5,(d-today())/(7*86400000));}
+
+function budgetOf(c){var b=S().budget[c[0]];return (typeof b==="number"&&b>0)?b:c[4];}
+function status(c){
+  var id=c[0],s=S();
+  if(s.done[id]==="landed")return 2;
+  if(s.done[id]==="parked")return 3;
+  var b=s.bursts[id]||0;
+  if(b>=budgetOf(c))return 4;
+  var t=s.ticks[id];var any=false;if(t)for(var k in t)if(t[k]){any=true;break;}
+  return (b>0||any)?1:0;
+}
+
+/* ---------- countdown ---------- */
+document.getElementById("days").textContent=Math.max(0,Math.ceil((P1-today())/86400000));
+
+/* ---------- chapter card ---------- */
+function cardHTML(c,full){
+  var id=c[0],s=S(),b=s.bursts[id]||0,bud=budgetOf(c),st=status(c);
+  var df=c[9];
+  var dfCell=df?
+    '<a href="'+esc(df)+'" target="_blank" rel="noopener"><span class="n">1 &middot; Practice</span><span class="v">Dr Frost<small>questions first, cold</small></span></a>':
+    '<a href="https://www.drfrost.org/" target="_blank" rel="noopener"><span class="n">1 &middot; Practice</span><span class="v">Dr Frost<small>log in, search &ldquo;'+esc(c[1])+'&rdquo;</small></span></a>';
+  var pmt=c[6].map(function(p){return '<a href="'+esc(p[1])+'" target="_blank" rel="noopener">'+esc(p[0])+'</a>';}).join(" &middot; ");
+  var h='<div class="nexthead"><div class="t"><b>'+esc(c[1])+'</b><span>Year '+c[3]+' '+STRAND[c[2]]+' &middot; '+c[8].length+' lessons &middot; <span class="st s'+st+'">'+STATUS[st]+'</span></span></div>'
+   +'<div class="budget'+(b>=bud?' over':'')+'"><b>'+b+'<span style="font-size:13px;color:var(--ink-3);font-weight:400"> / '+bud+'</span></b>bursts</div></div>'
+   +'<div class="loop">'+dfCell
+   +'<a href="'+esc(c[5])+'" target="_blank" rel="noopener"><span class="n">2 &middot; Exit test</span><span class="v">Question Set<small>Maths Genie, with answers</small></span></a>'
+   +'<div class="step" style="padding:11px 12px"><span class="n" style="display:block;font:500 10px/1 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:5px">3 &middot; Real marks</span><span class="v" style="font:500 13px/1.3 var(--sans)">'+pmt+'<small style="display:block;font-weight:400;color:var(--ink-3);font-size:11px;margin-top:2px">PMT past paper questions by topic</small></span></div>'
+   +'<a href="'+esc(c[7])+'" target="_blank" rel="noopener"><span class="n">4 &middot; Fallback</span><span class="v">ExamSolutions<small>different voice when a video fails</small></span></a>'
+   +'</div><div class="subs">';
+  var t=s.ticks[id]||{};
+  for(j=0;j<c[8].length;j++){
+    h+='<label class="srow"><input type="checkbox" data-c="'+id+'" data-s="'+j+'"'+(t[j]?' checked':'')+'><a href="'+esc(c[8][j][1])+'" target="_blank" rel="noopener">'+esc(c[8][j][0])+'</a><span class="yt">video</span></label>';
+  }
+  h+='</div><div class="acts">'
+   +'<button class="btn small" data-act="burst" data-c="'+id+'">+ Log burst</button>'
+   +'<button class="btn small ghost" data-act="unburst" data-c="'+id+'" aria-label="Remove a burst">&minus;</button>'
+   +'<span class="sp"></span>';
+  if(full){
+    h+='<span class="prior">';
+    for(var p=0;p<3;p++)h+='<button class="pr" data-p="'+p+'" data-c="'+id+'" aria-pressed="'+(s.prior[id]===p?'true':'false')+'">'+PRIOR[who][p]+'</button>';
+    h+='</span><span style="font-size:11px;color:var(--ink-3)">budget <input class="inl" type="number" min="1" max="40" data-bud="'+id+'" value="'+bud+'" style="width:44px"></span>';
+  }
+  if(st===2||st===3){
+    h+='<button class="btn small ghost" data-act="reopen" data-c="'+id+'">Reopen</button>';
+  }else{
+    h+='<button class="btn small" data-act="landed" data-c="'+id+'" style="background:var(--solid);border-color:var(--solid)">Landed</button>'
+     +'<button class="btn small ghost" data-act="parked" data-c="'+id+'">Park for pass two</button>';
+  }
+  h+='</div>';
+  return h;
+}
+
+/* ---------- now ---------- */
+function renderNow(){
+  var s=S();
+  // milestones
+  ["as","y2"].forEach(function(k){
+    var yr=k==="as"?1:2, due=k==="as"?AS_DUE:Y2_DUE, tot=0,c2=0,c3=0,c1=0,rem=0;
+    for(i=0;i<CH.length;i++){var c=CH[i];if(c[3]!==yr)continue;tot++;
+      var st=status(c);if(st===2)c2++;else if(st===3)c3++;else{ if(st!==0)c1++; rem+=Math.max(0,budgetOf(c)-(s.bursts[c[0]]||0)); }
+    }
+    document.getElementById(k+"-done").textContent=c2+c3;
+    document.getElementById(k+"-k2").textContent=c2;
+    document.getElementById(k+"-k3").textContent=c3;
+    document.getElementById(k+"-k1").textContent=c1;
+    document.getElementById(k+"-meter").innerHTML=
+      '<i style="background:var(--solid);width:'+(c2/tot*100)+'%"></i><i style="background:var(--park);width:'+(c3/tot*100)+'%"></i><i style="background:var(--accent);width:'+(c1/tot*100)+'%"></i>';
+    var start=k==="as"?today():new Date(Math.max(today(),new Date(2027,0,4)));
+    var wk=Math.max(0.5,(due-start)/(7*86400000));
+    var need=rem/wk;
+    var r=document.getElementById(k+"-rate");
+    var overdue=today()>due;
+    if(c2+c3===tot){r.className="rate";r.innerHTML="Done.";}
+    else if(overdue){r.className="rate warn";r.innerHTML="<b>"+rem+"</b> bursts still open past the date. Park what you must and move on.";}
+    else{r.className="rate"+(need>s.target?" warn":"");r.innerHTML="<b>"+rem+"</b> bursts left &middot; needs <b>"+need.toFixed(1)+"/wk</b> to land it";}
+    document.getElementById(k+"-note").textContent=overdue?"":Math.ceil(wk)+" wks left";
+  });
+  var ro=document.getElementById("ro");ro.hidden=!isRO();if(isRO())ro.textContent="Viewing "+s.name+". Read-only. Switch back to yourself to log work.";
+  var oth=document.getElementById("other");
+  if(SYNC.ready){
+    var oid=who===SYNC.id?(SYNC.id==="a"?"b":"a"):SYNC.id, os=store[oid], h="";
+    if(os){
+      var keep=who;who=oid;
+      var c=[[0,0],[0,0]];
+      for(i=0;i<CH.length;i++){var st=status(CH[i]);var y=CH[i][3]-1;if(st===2||st===3)c[y][0]++;c[y][1]++;}
+      who=keep;
+      var wkO=os.week&&os.week[weekKey()]||0;
+      h='<span>'+(os.name||"")+'</span>'
+       +'<span>AS <b>'+c[0][0]+'/'+c[0][1]+'</b> <span class="obar"><i style="background:var(--solid);width:'+(c[0][0]/c[0][1]*100)+'%"></i></span></span>'
+       +'<span>Y2 <b>'+c[1][0]+'/'+c[1][1]+'</b> <span class="obar"><i style="background:var(--solid);width:'+(c[1][0]/c[1][1]*100)+'%"></i></span></span>'
+       +'<span>this week <b>'+wkO+'</b> bursts</span>';
+    }
+    oth.innerHTML=h;oth.hidden=!h;
+  }else oth.hidden=true;
+  var wkk=weekKey();
+  document.getElementById("bw").textContent=s.week[wkk]||0;
+  document.getElementById("bt").textContent=s.target;
+  document.getElementById("tgt").value=s.target;
+  // next: first budget-spent chapter needing a decision, else first not-started/open in order
+  var nxt=null;
+  for(i=0;i<CH.length&&!nxt;i++)if(status(CH[i])===4)nxt=CH[i];
+  for(i=0;i<CH.length&&!nxt;i++){var st=status(CH[i]);if(st===0||st===1)nxt=CH[i];}
+  var host=document.getElementById("next");
+  if(!nxt){host.innerHTML='<div class="empty">Every chapter is landed or parked. Pass two: open the parked ones from the Course tab, and sit papers.</div>';return;}
+  host.innerHTML='<div class="next">'+cardHTML(nxt,false)+'</div>';
+  document.getElementById("next-sub").textContent=status(nxt)===4?
+    "Budget spent on this one. Decide: did it land, or park it for March? Then the next chapter appears.":
+    "The next chapter in sequence. Questions first, video only for what doesn't land, move on when the budget's spent.";
+}
+
+/* ---------- course ---------- */
+var openCh={};
+function renderCourse(){
+  document.getElementById("prior-sub").textContent=PRIORSUB[who];
+  var s=S(),h="",lastKey="";
+  for(i=0;i<CH.length;i++){
+    var c=CH[i],key="Year "+c[3]+" "+STRAND[c[2]];
+    if(key!==lastKey){h+='<h3>'+key+'</h3>';lastKey=key;}
+    var st=status(c),b=s.bursts[c[0]]||0,bud=budgetOf(c),op=!!openCh[c[0]];
+    h+='<div class="ch"><button class="chh" aria-expanded="'+op+'" data-open="'+c[0]+'">'
+     +'<span class="chn"><b>'+esc(c[1])+'</b><span>'+c[8].length+' lessons'+(s.prior[c[0]]!==undefined?' &middot; '+PRIOR[who][s.prior[c[0]]]:'')+'</span></span>'
+     +'<span class="st s'+st+'">'+STATUS[st]+'</span>'
+     +'<span class="chb">'+b+'/'+bud+'</span><span class="chev">&#9656;</span></button>'
+     +'<div class="chbody"'+(op?'':' hidden')+' id="cb'+c[0]+'">'+(op?cardHTML(c,true):'')+'</div></div>';
+  }
+  document.getElementById("course").innerHTML=h;
+}
+
+/* ---------- papers ---------- */
+var PAPERS=[];
+(function(){var y=["June 2026","June 2025","June 2024","June 2023","June 2022","Nov 2021","Nov 2020","June 2019","June 2018"];
+ for(i=0;i<y.length;i++)for(j=1;j<=3;j++)PAPERS.push(y[i]+" · Paper "+j);})();
+function renderPapers(){
+  var ps=S().papers,h="";
+  for(i=0;i<ps.length;i++)h+='<li><span class="plname">'+esc(ps[i].n)+'<small>'+esc(ps[i].d)+'</small></span><span class="bartrack"><i style="width:'+ps[i].s+'%"></i></span><span class="score">'+ps[i].s+'<s>/100</s></span><button class="del" data-i="'+i+'" aria-label="Delete">&times;</button></li>';
+  document.getElementById("plog").innerHTML=h||'<li class="empty">No papers logged yet.</li>';
+  var n=ps.length,sum=0,best=0;for(i=0;i<n;i++){sum+=ps[i].s;if(ps[i].s>best)best=ps[i].s;}
+  document.getElementById("s-n").textContent=n;
+  document.getElementById("s-avg").textContent=n?Math.round(sum/n):"—";
+  document.getElementById("s-best").textContent=n?best:"—";
+  var r=ps.slice(-5),rs=0;for(i=0;i<r.length;i++)rs+=r[i].s;
+  document.getElementById("s-recent").textContent=r.length?Math.round(rs/r.length):"—";
+}
+
+function renderAll(){renderNow();renderCourse();renderPapers();}
+
+/* ---------- actions (delegated) ---------- */
+function act(e){
+  var s=S(),t=e.target;
+  if(isRO()&&!t.closest("[data-open]"))return;
+  var b=t.closest("[data-act]");
+  if(b){
+    var id=+b.getAttribute("data-c"),a=b.getAttribute("data-act");
+    if(a==="burst"){s.bursts[id]=(s.bursts[id]||0)+1;var wk=weekKey();s.week[wk]=(s.week[wk]||0)+1;}
+    else if(a==="unburst"){s.bursts[id]=Math.max(0,(s.bursts[id]||0)-1);var wk2=weekKey();s.week[wk2]=Math.max(0,(s.week[wk2]||0)-1);}
+    else if(a==="landed")s.done[id]="landed";
+    else if(a==="parked")s.done[id]="parked";
+    else if(a==="reopen")delete s.done[id];
+    save();renderAll();return;
+  }
+  var p=t.closest(".pr");
+  if(p){var pid=+p.getAttribute("data-c"),pv=+p.getAttribute("data-p");
+    if(s.prior[pid]===pv)delete s.prior[pid];else s.prior[pid]=pv;save();renderAll();return;}
+  var o=t.closest("[data-open]");
+  if(o){var oid=+o.getAttribute("data-open");openCh[oid]=!openCh[oid];renderCourse();return;}
+}
+function chg(e){
+  var s=S(),t=e.target;
+  if(isRO()){renderAll();return;}
+  if(t.matches("input[type=checkbox][data-c]")){var id=+t.getAttribute("data-c"),si=+t.getAttribute("data-s");
+    s.ticks[id]=s.ticks[id]||{};s.ticks[id][si]=t.checked;save();renderNow();
+    // refresh status pill in course list without collapsing
+    var pill=document.querySelector('.chh[data-open="'+id+'"] .st');if(pill){var st=status(CH[id]);pill.className="st s"+st;pill.textContent=STATUS[st];}
+    return;}
+  if(t.matches("[data-bud]")){var bid=+t.getAttribute("data-bud"),v=parseInt(t.value,10);
+    if(!isNaN(v)&&v>0)s.budget[bid]=Math.min(40,v);else delete s.budget[bid];save();renderAll();return;}
+}
+document.getElementById("v-now").addEventListener("click",act);
+document.getElementById("v-course").addEventListener("click",act);
+document.getElementById("v-now").addEventListener("change",chg);
+document.getElementById("v-course").addEventListener("change",chg);
+
+document.querySelector("nav.seg").addEventListener("click",function(e){
+  var b=e.target.closest("button[role=tab]");if(!b)return;
+  var tabs=this.querySelectorAll("button");
+  for(i=0;i<tabs.length;i++){var on=tabs[i]===b;tabs[i].setAttribute("aria-selected",on?"true":"false");document.getElementById("v-"+tabs[i].getAttribute("data-v")).hidden=!on;}
+});
+document.getElementById("whorow").addEventListener("click",function(e){
+  var b=e.target.closest(".who");if(!b)return;who=b.getAttribute("data-p");
+  var bs=this.querySelectorAll(".who");for(i=0;i<bs.length;i++)bs[i].setAttribute("aria-pressed",bs[i]===b?"true":"false");
+  renderAll();
+});
+document.getElementById("tgt").addEventListener("change",function(){if(isRO()){renderNow();return;}var v=parseInt(this.value,10);S().target=(isNaN(v)||v<1)?13:Math.min(60,v);save();renderNow();});
+(function(){var sel=document.getElementById("psel"),h="";for(i=0;i<PAPERS.length;i++)h+='<option>'+PAPERS[i]+'</option>';sel.innerHTML=h;})();
+document.getElementById("padd").addEventListener("click",function(){
+  if(isRO())return;
+  var sel=document.getElementById("psel"),sc=document.getElementById("pscore"),v=parseInt(sc.value,10);
+  if(isNaN(v)){sc.focus();return;}
+  S().papers.push({n:sel.value,s:Math.max(0,Math.min(100,v)),d:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})});
+  sc.value="";save();renderPapers();
+});
+document.getElementById("plog").addEventListener("click",function(e){var b=e.target.closest(".del");if(!b||isRO())return;S().papers.splice(+b.getAttribute("data-i"),1);save();renderPapers();});
+
+function showChooser(on){document.getElementById("choose").hidden=!on;}
+document.getElementById("choose").addEventListener("click",function(e){
+  var b=e.target.closest("[data-me]");if(!b)return;
+  try{localStorage.setItem(KEY+"_me",b.getAttribute("data-me"));}catch(e){}
+  showChooser(false);
+  var bs=document.querySelectorAll("#whorow .who");for(i=0;i<bs.length;i++)bs[i].setAttribute("aria-pressed",bs[i].getAttribute("data-p")===b.getAttribute("data-me")?"true":"false");
+  initSync().then(function(){renderAll();});
+});
+document.getElementById("notme").addEventListener("click",function(){
+  try{localStorage.removeItem(KEY+"_me");}catch(e){}
+  SYNC.ready=false;SYNC.id=null;SYNC.secret=null;setSync("off");showChooser(true);
+});
+load();
+(function(){var m0=me();if(m0){who=m0;var bs=document.querySelectorAll("#whorow .who");for(i=0;i<bs.length;i++)bs[i].setAttribute("aria-pressed",bs[i].getAttribute("data-p")===m0?"true":"false");}})();
+if(me()){showChooser(false);initSync().then(function(){renderAll();});}
+else{showChooser(true);renderAll();}
+})();
+</script>
+</body>
+</html>
