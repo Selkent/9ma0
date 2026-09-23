@@ -214,6 +214,7 @@ table.dates tr.hard td:nth-child(2){font-weight:600}
 .notme{appearance:none;background:none;border:0;font:400 11px var(--sans);color:var(--ink-3);cursor:pointer;text-decoration:underline;padding:0 0 0 8px}
 .theme{appearance:none;background:transparent;border:1px solid var(--rule);color:var(--ink-2);border-radius:999px;width:28px;height:28px;cursor:pointer;font-size:14px;line-height:1;margin-right:8px;display:grid;place-items:center}
 .theme:hover{border-color:var(--accent);color:var(--accent)}
+.theme-c{position:absolute;top:18px;right:18px;margin:0;width:34px;height:34px;font-size:16px}
 .tcount{display:inline-block;font:500 10px/1 var(--mono);background:var(--blank);color:#fff;border-radius:999px;padding:3px 6px;margin-left:4px;vertical-align:middle}
 .tf{appearance:none;background:transparent;border:1px solid var(--rule);color:var(--ink-3);border-radius:5px;font:500 10px/1 var(--sans);padding:4px 7px;cursor:pointer;flex:none;text-transform:uppercase;letter-spacing:.06em}
 .tf:hover{border-color:var(--blank);color:var(--blank)}
@@ -234,6 +235,7 @@ ul.tlist .when{font-family:var(--mono);font-size:11px;color:var(--ink-3);flex:no
 <body>
 
 <div class="choose" id="choose" hidden>
+  <button class="theme theme-c" data-theme-btn aria-label="Toggle light or dark" title="Light / dark">&#9681;</button>
   <h1>Who's this?</h1>
   <div class="opts">
     <button data-me="a"><b>Saad</b></button>
@@ -244,7 +246,7 @@ ul.tlist .when{font-family:var(--mono);font-size:11px;color:var(--ink-3);flex:no
 <header class="top">
   <div class="brandrow">
     <div class="brand">9MA0 <span>&middot; Edexcel Maths</span></div>
-    <div class="whorow"><button class="theme" id="theme" aria-label="Toggle light or dark" title="Light / dark">&#9681;</button><span id="sync" class="sync" title="Sync status"></span><div id="whorow" style="display:flex;gap:6px">
+    <div class="whorow"><button class="theme" data-theme-btn aria-label="Toggle light or dark" title="Light / dark">&#9681;</button><span id="sync" class="sync" title="Sync status"></span><div id="whorow" style="display:flex;gap:6px">
       <button class="who" data-p="a" aria-pressed="true">Saad</button>
       <button class="who" data-p="b" aria-pressed="false">Hammad</button>
     </div><button class="notme" id="notme" title="Choose again">not you?</button></div>
@@ -695,7 +697,8 @@ document.getElementById("notme").addEventListener("click",function(){
 });
 (function(){var t=null;try{t=localStorage.getItem(KEY+"_theme");}catch(e){}
   if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);
-  document.getElementById("theme").addEventListener("click",function(){
+  var tbs=document.querySelectorAll("[data-theme-btn]");
+  for(var q=0;q<tbs.length;q++)tbs[q].addEventListener("click",function(){
     var cur=document.documentElement.getAttribute("data-theme");
     var sysDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;
     var isDark=cur?cur==="dark":sysDark;
